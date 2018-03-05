@@ -1,0 +1,50 @@
+server:
+  port: 7902
+  tomcat:
+    accept-count: 300
+    max-threads: 300
+    max-connections: 300
+
+spring.application.name: microservice-provider-user
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true             # 注册本地IP，默认false为hostname
+
+user:
+  nextUserServicePath: http://localhost:7902/provider/testdelay10
+  sleep: 10
+
+log4j2:
+  AsyncQueueFullPolicy: Discard
+  DiscardThreshold: ERROR
+Log4jContextSelector: org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+AsyncLogger.RingBufferSize: 128
+
+#logging:
+#  config: classpath:config/log4j2.xml
+  
+spring:
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  datasource:                           # 指定数据源  
+    platform: h2                        # 指定数据源类型
+    schema: classpath:sql/schema.sql    # 指定h2数据库的建表脚本
+    data: classpath:sql/data.sql        # 指定h2数据库的数据脚本
+logging:                                # 配置日志级别，让hibernate打印执行的SQL
+  config: classpath:config/log4j2.xml
+  level:
+    root: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+    com.netflix: WARN
+    org.springframework.web: WARN
+    com.thoughtmechanix: INFO
